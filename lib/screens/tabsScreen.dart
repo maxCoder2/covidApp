@@ -20,7 +20,7 @@ class _TabsScreenState extends State<TabsScreen> {
   final List<Map<String, Object>> _pages = [
     {'page': HomePage(), 'title': 'World'},
     {'page': CountryScreen(), 'title': 'By Country'},
-    {'page': MainStatsScreen(), 'title': 'Stats'}
+    {'page': MainStatsScreen(_pieChart), 'title': 'Stats'}
   ];
 
   var _selectedPageIndex = 0;
@@ -45,6 +45,19 @@ class _TabsScreenState extends State<TabsScreen> {
   void initState() {
     fetchCountryData();
     super.initState();
+  }
+
+  static bool _pieChart = true;
+
+  IconData _getGraphIcon(bool boolean) {
+    if (boolean)
+    {
+      return MdiIcons.chartBellCurveCumulative;
+    }
+    else
+    {
+      return MdiIcons.chartPie;
+    }
   }
 
   @override
@@ -75,19 +88,33 @@ class _TabsScreenState extends State<TabsScreen> {
                             : Brightness.light);
                   },
                 )
-              : IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: countryData == null
-                      ? null
-                      : () {
-                          showSearch(
-                              context: context,
-                              delegate: SearchScreen(countryData));
-                        },
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Theme.of(context).primaryColor
-                      : Colors.white,
-                ),
+              : _selectedPageIndex == 1
+                  ? IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: countryData == null
+                          ? null
+                          : () {
+                              showSearch(
+                                  context: context,
+                                  delegate: SearchScreen(countryData));
+                            },
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Theme.of(context).primaryColor
+                          : Colors.white,
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        _getGraphIcon(_pieChart),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).primaryColor
+                            : Colors.white,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _pieChart = !_pieChart;
+                        });
+                      },
+                    ),
         ],
         title: Text(
           _pages[_selectedPageIndex]['title'],

@@ -7,6 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class MainStatsScreen extends StatefulWidget {
+  bool _pieChart;
+
+  MainStatsScreen(this._pieChart);
+
   @override
   _MainStatsScreenState createState() => _MainStatsScreenState();
 }
@@ -14,7 +18,7 @@ class MainStatsScreen extends StatefulWidget {
 class _MainStatsScreenState extends State<MainStatsScreen> {
   List countryData;
 
-  fetchCountryData() async {
+  Future<void> fetchCountryData() async {
     http.Response response = await http
         .get('https://corona.lmao.ninja/v2/countries?sort=todayDeaths');
     setState(() {
@@ -31,52 +35,33 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
     });
   }
 
-  @override
-  void initState() {
-    fetchCountryData();
-    fetchWorldData();
-    super.initState();
-  }
-
   var first = true;
 
-  @override
-  void didChangeDependencies() {
-    if (first) {
-      _seriesPieData = List<charts.Series<CountryInfo, String>>();
-      _generateData();
-      first = false;
-    }
-    super.didChangeDependencies();
-  }
+  List<charts.Series<CountryInfo, String>> _seriesPieData =
+      List<charts.Series<CountryInfo, String>>();
 
-  List<charts.Series<CountryInfo, String>> _seriesPieData;
-
-  void _generateData() {
-    List data;
-    for (int i = 0; i < 8; i++) {
+  Future<void> _generateData() async {
+    List<CountryInfo> data = List<CountryInfo>();
+    for (int i = 0; i < 6; i++) {
       var sumDeaths = 0;
       sumDeaths += countryData[i]['todayDeaths'];
 
-      data.add(
-        CountryInfo(
-          countryData[i]['country'],
-          (countryData[i]['todayDeaths'] / worldData['todayDeaths']) * 100,
-          Color((math.Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-              .withOpacity(1.0),
-        ),
-      );
-      if (countryData[i]['todayDeaths'] == 0) {
-        break;
-      }
-      if (i == 7 && countryData[8]['todayDeaths'] > 0) {
+      if (i == 5 && countryData[6]['todayDeaths'] > 0) {
         data.add(CountryInfo(
           'Other',
-          ((worldData['todayDeaths'] - sumDeaths) / worldData['todayDeaths']) *
-              100,
-          Color((math.Random().nextDouble() * 0xFFFFFF).toInt() << 0)
-              .withOpacity(1.0),
+          worldData['todayDeaths'] - sumDeaths,
+          colors[i],
         ));
+      } else if (countryData[i]['todayDeaths'] == 0) {
+        break;
+      } else {
+        data.add(
+          CountryInfo(
+            countryData[i]['country'],
+            countryData[i]['todayDeaths'],
+            colors[i],
+          ),
+        );
       }
     }
 
@@ -84,22 +69,37 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
       charts.Series(
         data: data,
         domainFn: (CountryInfo country, _) => country.name,
-        measureFn: (CountryInfo country, _) => country.percentage,
+        measureFn: (CountryInfo country, _) => country.value,
         colorFn: (CountryInfo country, _) =>
             charts.ColorUtil.fromDartColor(country.color),
         id: 'Country',
-        labelAccessorFn: (CountryInfo row, _) => '${row.percentage}',
+        labelAccessorFn: (CountryInfo row, _) => '${row.value}',
       ),
     );
   }
 
+  @override
+  void initState() {
+    fetchCountryData().then((response) => _generateData());
+    fetchWorldData();
+    super.initState();
+  }
+
+  List<Color> colors = [
+    Colors.red,
+    Colors.orange,
+    Colors.amber,
+    Colors.green,
+    Colors.blue,
+    Colors.indigo,
+  ];
 
   @override
   Widget build(BuildContext context) {
     return countryData == null || worldData == null
-        ? CircularProgressIndicator()
-        : Padding(
-            padding: EdgeInsets.all(10),
+        ? Center(child: CircularProgressIndicator())
+        : widget._pieChart ? Container(
+            padding: EdgeInsets.all(5),
             child: Container(
               child: Center(
                 child: Column(
@@ -127,7 +127,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                             desiredMaxRows: 2,
                             cellPadding: EdgeInsets.only(right: 4, bottom: 4),
                             entryTextStyle: charts.TextStyleSpec(
-                              color: charts.MaterialPalette.purple.shadeDefault,
+                              // color: charts.MaterialPalette.purple.shadeDefault,
                               fontFamily: 'Lato',
                               fontSize: 13,
                             ),
@@ -135,10 +135,11 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                         ],
                         defaultRenderer: charts.ArcRendererConfig(
                           arcWidth:
-                              (MediaQuery.of(context).size.width * 0.5).round(),
+                              (MediaQuery.of(context).size.width * 0.3).round(),
                           arcRendererDecorators: [
                             charts.ArcLabelDecorator(
-                                labelPosition: charts.ArcLabelPosition.inside)
+                                labelPosition: charts.ArcLabelPosition.auto,
+                                )
                           ],
                         ),
                       ),
@@ -147,14 +148,14 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                 ),
               ),
             ),
-          );
+          ) : Container();
   }
 }
 
 class CountryInfo {
   String name;
-  double percentage;
+  int value;
   Color color;
 
-  CountryInfo(this.name, this.percentage, this.color);
+  CountryInfo(this.name, this.value, this.color);
 }

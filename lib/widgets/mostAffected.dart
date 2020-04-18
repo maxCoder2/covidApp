@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:number_display/number_display.dart';
 
 class MostAffected extends StatelessWidget {
   final List countryData;
 
   MostAffected(this.countryData);
+
+  final display = createDisplay(
+    length: 15,
+    decimal: 0,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,7 @@ class MostAffected extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    'Deaths: ${countryData[index]['deaths']}',
+                    'Deaths: ${display(countryData[index]['deaths'])}',
                     style: TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18),
                   )
