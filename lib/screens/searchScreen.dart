@@ -14,6 +14,7 @@ class SearchScreen extends SearchDelegate {
   );
 
   SearchScreen(this.countryList);
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -38,7 +39,15 @@ class SearchScreen extends SearchDelegate {
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    return Theme.of(context);
+    assert(context != null);
+    final ThemeData theme = Theme.of(context);
+    assert(theme != null);
+    return theme.copyWith(
+      appBarTheme: AppBarTheme(color: Theme.of(context).brightness == Brightness.light ? Colors.white : Theme.of(context).primaryColor),
+      textTheme: Typography.whiteCupertino //TextTheme(text: TextStyle(color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white, fontSize: 16))
+            
+          
+    );
   }
 
   @override

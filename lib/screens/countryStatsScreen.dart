@@ -18,8 +18,8 @@ class CountryStatsScreen extends StatefulWidget {
 class _CountryStatsScreenState extends State<CountryStatsScreen> {
   Map countryData;
 
-  List<charts.Series<Point, int>> _casesTimeLineData =
-      List<charts.Series<Point, int>>();
+  List<charts.Series<Point, DateTime>> _casesTimeLineData =
+      List<charts.Series<Point, DateTime>>();
 
   Future<void> fetchCountryData() async {
     http.Response response = await http.get(
@@ -80,18 +80,18 @@ class _CountryStatsScreenState extends State<CountryStatsScreen> {
         id: 'Cases',
         data: casesTime,
         measureFn: (Point point, _) => point.value,
-        domainFn: (Point point, _) => _daysSinceJan22(point.time),
+        domainFn: (Point point, _) => point.time,
       ),
     );
     _casesTimeLineData.add(
       charts.Series(
         colorFn: (__, _) => charts.ColorUtil.fromDartColor(
-          Color(0xff000000),
+          Theme.of(context).brightness == Brightness.light ? Color(0xff000000) : Color(0xfff44336),
         ),
         id: 'Deaths',
         data: deathsTime,
         measureFn: (Point point, _) => point.value,
-        domainFn: (Point point, _) => _daysSinceJan22(point.time),
+        domainFn: (Point point, _) => point.time,
       ),
     );
     _casesTimeLineData.add(
@@ -102,7 +102,7 @@ class _CountryStatsScreenState extends State<CountryStatsScreen> {
         id: 'Recovered',
         data: recoveredTime,
         measureFn: (Point point, _) => point.value,
-        domainFn: (Point point, _) => _daysSinceJan22(point.time),
+        domainFn: (Point point, _) => point.time,
       ),
     );
   }
@@ -160,7 +160,7 @@ class _CountryStatsScreenState extends State<CountryStatsScreen> {
                           Row(
                             children: <Widget>[
                               CircleAvatar(
-                                  backgroundColor: Colors.black, maxRadius: 6),
+                                  backgroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.red, maxRadius: 6),
                               SizedBox(width: 6),
                               Text(
                                 'Deaths',
@@ -175,20 +175,40 @@ class _CountryStatsScreenState extends State<CountryStatsScreen> {
                         height: 10,
                       ),
                       Expanded(
-                        child: charts.LineChart(
+                        child: charts.TimeSeriesChart(
                           _casesTimeLineData,
                           defaultRenderer: charts.LineRendererConfig(
                               includeArea: false, stacked: false),
                           animate: true,
                           animationDuration: Duration(seconds: 1),
-                          behaviors: [
-                            charts.ChartTitle(
-                              'Days Since Jan 22, 2020',
-                              behaviorPosition: charts.BehaviorPosition.bottom,
-                              titleOutsideJustification:
-                                  charts.OutsideJustification.middleDrawArea,
+                          domainAxis: charts.DateTimeAxisSpec(
+                            renderSpec: charts.GridlineRendererSpec(
+                              axisLineStyle: charts.LineStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                              labelStyle: charts.TextStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                              lineStyle: charts.LineStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
                             ),
-                          ],
+                          ),
+                          primaryMeasureAxis: charts.NumericAxisSpec(
+                            renderSpec: charts.GridlineRendererSpec(
+                              axisLineStyle: charts.LineStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                              labelStyle: charts.TextStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                              lineStyle: charts.LineStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                            ),
+                          ),
+                          // behaviors: [
+                          //   charts.ChartTitle(
+                          //     '',
+                          //     behaviorPosition: charts.BehaviorPosition.bottom,
+                          //     titleOutsideJustification:
+                          //         charts.OutsideJustification.middleDrawArea,
+                          //   ),
+                          // ],
                         ),
                       )
                     ],

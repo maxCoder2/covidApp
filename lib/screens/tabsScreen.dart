@@ -49,7 +49,6 @@ class _TabsScreenState extends State<TabsScreen> {
     super.initState();
   }
 
-  static bool _pieChart = true;
 
   @override
   Widget build(BuildContext context) {

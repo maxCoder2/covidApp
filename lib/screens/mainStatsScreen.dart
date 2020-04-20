@@ -60,8 +60,8 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
   List<charts.Series<TodayPieInfo, String>> _todayCasePieData =
       List<charts.Series<TodayPieInfo, String>>();
 
-  List<charts.Series<Point, int>> _casesTimeLineData =
-      List<charts.Series<Point, int>>();
+  List<charts.Series<Point, DateTime>> _casesTimeLineData =
+      List<charts.Series<Point, DateTime>>();
 
   Future<void> _generateData() async {
     _generateTodayDeathPieInfo();
@@ -91,6 +91,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
           ),
         );
       }
+      print('generated today case');
     }
 
     _todayCasePieData.add(
@@ -142,17 +143,13 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
         labelAccessorFn: (TodayPieInfo row, _) => '${row.value}',
       ),
     );
+    print('generated today death');
   }
 
   DateTime _formatDate(String time) {
     String theDate = DateFormat('MM/dd/yyyy').parse(time).toString();
     theDate = theDate.substring(2, theDate.length - 4);
     return DateTime.parse('20' + theDate);
-  }
-
-  int _daysSinceJan22(DateTime dateTime) {
-    final jan22 = DateTime(2020, 1, 22);
-    return dateTime.difference(jan22).inDays;
   }
 
   _generatePoints() {
@@ -189,7 +186,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
         id: 'Cases',
         data: casesTime,
         measureFn: (Point point, _) => point.value,
-        domainFn: (Point point, _) => _daysSinceJan22(point.time),
+        domainFn: (Point point, _) => point.time,
       ),
     );
     _casesTimeLineData.add(
@@ -202,7 +199,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
         id: 'Deaths',
         data: deathsTime,
         measureFn: (Point point, _) => point.value,
-        domainFn: (Point point, _) => _daysSinceJan22(point.time),
+        domainFn: (Point point, _) => point.time,
       ),
     );
     _casesTimeLineData.add(
@@ -213,7 +210,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
         id: 'Recovered',
         data: recoveredTime,
         measureFn: (Point point, _) => point.value,
-        domainFn: (Point point, _) => _daysSinceJan22(point.time),
+        domainFn: (Point point, _) => point.time,
       ),
     );
   }
@@ -238,6 +235,11 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
 
   Widget _buildPieChartSection(
       String title, List<charts.Series<TodayPieInfo, String>> data) {
+        if (data == null)
+        {
+          print('no data');
+          return Container();
+        }
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       padding: EdgeInsets.all(5),
@@ -278,7 +280,17 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                     charts.ArcLabelDecorator(
                       labelPadding: 0,
                       labelPosition: charts.ArcLabelPosition.auto,
-                    )
+                      leaderLineColor:
+                          Theme.of(context).brightness == Brightness.light
+                              ? charts.Color.black
+                              : charts.Color.white,
+                      outsideLabelStyleSpec: charts.TextStyleSpec(
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? charts.Color.black
+                            : charts.Color.white,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -291,18 +303,8 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var axis = Theme.of(context).brightness == Brightness.light
-        ? charts.NumericAxisSpec()
-        : charts.NumericAxisSpec(
-            renderSpec: charts.GridlineRendererSpec(
-                labelStyle:
-                    charts.TextStyleSpec(color: charts.MaterialPalette.white)),
-          );
-
     return countryData == null ||
             worldData == null ||
-            _todayCasePieData == null ||
-            _todayDeathPieData == null ||
             _casesTimeLineData == null
         ? Center(child: CircularProgressIndicator())
         : Provider.of<Notify>(context).pieChart
@@ -381,21 +383,40 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                         height: 10,
                       ),
                       Expanded(
-                        child: charts.LineChart(
+                        child: charts.TimeSeriesChart(
                           _casesTimeLineData,
                           defaultRenderer: charts.LineRendererConfig(
                               includeArea: false, stacked: false),
                           animate: true,
                           animationDuration: Duration(seconds: 1),
-                          primaryMeasureAxis: axis,
-                          behaviors: [
-                            charts.ChartTitle(
-                              'Days Since Jan 22, 2020',
-                              behaviorPosition: charts.BehaviorPosition.bottom,
-                              titleOutsideJustification:
-                                  charts.OutsideJustification.middleDrawArea,
+                          domainAxis: charts.DateTimeAxisSpec(
+                            renderSpec: charts.GridlineRendererSpec(
+                              axisLineStyle: charts.LineStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                              labelStyle: charts.TextStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                              lineStyle: charts.LineStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
                             ),
-                          ],
+                          ),
+                          primaryMeasureAxis: charts.NumericAxisSpec(
+                            renderSpec: charts.GridlineRendererSpec(
+                              axisLineStyle: charts.LineStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                              labelStyle: charts.TextStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                              lineStyle: charts.LineStyleSpec(
+                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                            ),
+                          ),
+                          // behaviors: [
+                          //   charts.ChartTitle(
+                          //     '',
+                          //     behaviorPosition: charts.BehaviorPosition.bottom,
+                          //     titleOutsideJustification:
+                          //         charts.OutsideJustification.middleDrawArea,
+                          //   ),
+                          // ],
                         ),
                       )
                     ],
