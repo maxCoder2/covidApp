@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:number_display/number_display.dart';
+import './countryStatsScreen.dart';
 
 class CountryScreen extends StatefulWidget {
   @override
@@ -35,10 +36,20 @@ class _CountryScreenState extends State<CountryScreen> {
   @override
   Widget build(BuildContext context) {
     return countryData == null
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemBuilder: (context, index) {
-                return Card(
+        ? Center(child: CircularProgressIndicator())
+        : ListView.builder(
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => CountryStatsScreen(
+                  countryData[index]['country'],
+                ),
+              ),
+            );
+          },
+                child: Card(
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     height: 130,
@@ -111,9 +122,10 @@ class _CountryScreenState extends State<CountryScreen> {
                       ],
                     ),
                   ),
-                );
-              },
-              itemCount: countryData == null ? 0 : countryData.length,
-            );
+                ),
+              );
+            },
+            itemCount: countryData == null ? 0 : countryData.length,
+          );
   }
 }

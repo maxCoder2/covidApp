@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:covid19tracker/providers/notify.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/searchScreen.dart';
 import '../screens/countryScreen.dart';
@@ -20,7 +22,7 @@ class _TabsScreenState extends State<TabsScreen> {
   final List<Map<String, Object>> _pages = [
     {'page': HomePage(), 'title': 'World'},
     {'page': CountryScreen(), 'title': 'By Country'},
-    {'page': MainStatsScreen(_pieChart), 'title': 'Stats'}
+    {'page': MainStatsScreen(), 'title': 'Stats'}
   ];
 
   var _selectedPageIndex = 0;
@@ -48,17 +50,6 @@ class _TabsScreenState extends State<TabsScreen> {
   }
 
   static bool _pieChart = true;
-
-  IconData _getGraphIcon(bool boolean) {
-    if (boolean)
-    {
-      return MdiIcons.chartBellCurveCumulative;
-    }
-    else
-    {
-      return MdiIcons.chartPie;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,15 +95,13 @@ class _TabsScreenState extends State<TabsScreen> {
                     )
                   : IconButton(
                       icon: Icon(
-                        _getGraphIcon(_pieChart),
+                        Provider.of<Notify>(context).getGraphIcon,
                         color: Theme.of(context).brightness == Brightness.dark
                             ? Theme.of(context).primaryColor
                             : Colors.white,
                       ),
                       onPressed: () {
-                        setState(() {
-                          _pieChart = !_pieChart;
-                        });
+                        Provider.of<Notify>(context).changePieChart();
                       },
                     ),
         ],

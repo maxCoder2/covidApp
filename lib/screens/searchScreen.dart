@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:number_display/number_display.dart';
 
+import 'countryStatsScreen.dart';
+
 class SearchScreen extends SearchDelegate {
   final List countryList;
 
@@ -50,7 +52,16 @@ class SearchScreen extends SearchDelegate {
     return ListView.builder(
       itemCount: suggestionList.length,
       itemBuilder: (context, index) {
-        return Card(
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => CountryStatsScreen(
+                  suggestionList[index]['country'],
+                ),
+              ),
+            );
+          },
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             height: 130,
