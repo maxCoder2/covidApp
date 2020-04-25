@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class DataSource {
   static List<String> quotes = [
     '“Life isn’t about waiting for the storm to pass, it’s about learning how to dance in the rain.',

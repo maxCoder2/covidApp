@@ -86,7 +86,7 @@ class _CountryStatsScreenState extends State<CountryStatsScreen> {
     _casesTimeLineData.add(
       charts.Series(
         colorFn: (__, _) => charts.ColorUtil.fromDartColor(
-          Theme.of(context).brightness == Brightness.light ? Color(0xff000000) : Color(0xfff44336),
+          Color(0xfff44336),
         ),
         id: 'Deaths',
         data: deathsTime,
@@ -160,7 +160,7 @@ class _CountryStatsScreenState extends State<CountryStatsScreen> {
                           Row(
                             children: <Widget>[
                               CircleAvatar(
-                                  backgroundColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.red, maxRadius: 6),
+                                  backgroundColor: Colors.red, maxRadius: 6),
                               SizedBox(width: 6),
                               Text(
                                 'Deaths',

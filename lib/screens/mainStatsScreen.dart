@@ -91,7 +91,6 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
           ),
         );
       }
-      print('generated today case');
     }
 
     _todayCasePieData.add(
@@ -143,7 +142,6 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
         labelAccessorFn: (TodayPieInfo row, _) => '${row.value}',
       ),
     );
-    print('generated today death');
   }
 
   DateTime _formatDate(String time) {
@@ -192,9 +190,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
     _casesTimeLineData.add(
       charts.Series(
         colorFn: (__, _) => charts.ColorUtil.fromDartColor(
-          Theme.of(context).brightness == Brightness.light
-              ? Color(0xff000000)
-              : Color(0xfff44336),
+          Color(0xfff44336),
         ),
         id: 'Deaths',
         data: deathsTime,
@@ -222,6 +218,12 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
     fetchWorldData();
     fetchCasesTimeData();
     super.initState();
+  }
+
+  @override
+  dispose()
+  {
+    super.dispose();
   }
 
   List<Color> colors = [
@@ -363,11 +365,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                           Row(
                             children: <Widget>[
                               CircleAvatar(
-                                  backgroundColor:
-                                      Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.black
-                                          : Colors.red,
+                                  backgroundColor: Colors.red,
                                   maxRadius: 6),
                               SizedBox(width: 6),
                               Text(
@@ -409,14 +407,6 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                                   color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
                             ),
                           ),
-                          // behaviors: [
-                          //   charts.ChartTitle(
-                          //     '',
-                          //     behaviorPosition: charts.BehaviorPosition.bottom,
-                          //     titleOutsideJustification:
-                          //         charts.OutsideJustification.middleDrawArea,
-                          //   ),
-                          // ],
                         ),
                       )
                     ],
