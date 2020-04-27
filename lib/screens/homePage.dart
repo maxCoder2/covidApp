@@ -104,8 +104,8 @@ class _HomePageState extends State<HomePage> {
                   child: Text(
                 'WE ARE TOGETHER IN THE FIGHT',
                 style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
                 ),
               )),
               SizedBox(

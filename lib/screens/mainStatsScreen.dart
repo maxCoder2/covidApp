@@ -36,7 +36,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
 
   Map worldData;
 
-  fetchWorldData() async {
+  Future<void> fetchWorldData() async {
     http.Response response = await http.get('https://corona.lmao.ninja/v2/all');
     setState(() {
       worldData = json.decode(response.body);
@@ -45,15 +45,13 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
 
   Map casesTimeData;
 
-  fetchCasesTimeData() async {
+  Future<void> fetchCasesTimeData() async {
     http.Response response = await http
         .get('https://corona.lmao.ninja/v2/historical/all?lastdays=all');
     setState(() {
       casesTimeData = json.decode(response.body);
     });
   }
-
-  var first = true;
 
   List<charts.Series<TodayPieInfo, String>> _todayDeathPieData =
       List<charts.Series<TodayPieInfo, String>>();
@@ -63,7 +61,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
   List<charts.Series<Point, DateTime>> _casesTimeLineData =
       List<charts.Series<Point, DateTime>>();
 
-  Future<void> _generateData() async {
+  _generateData() {
     _generateTodayDeathPieInfo();
     _generateTodayCasePieInfo();
     _generatePoints();
@@ -213,17 +211,16 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
 
   @override
   void initState() {
-    fetchCountryDeathPieData().then((response) =>
-        fetchCountryCasesPieData().then((response) => _generateData()));
-    fetchWorldData();
-    fetchCasesTimeData();
+    fetchWorldData().then(
+      (response) => fetchCasesTimeData().then(
+        (response) => fetchCountryCasesPieData().then(
+          (response) => fetchCountryDeathPieData().then(
+            (response) => _generateData(),
+          ),
+        ),
+      ),
+    );
     super.initState();
-  }
-
-  @override
-  dispose()
-  {
-    super.dispose();
   }
 
   List<Color> colors = [
@@ -237,11 +234,6 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
 
   Widget _buildPieChartSection(
       String title, List<charts.Series<TodayPieInfo, String>> data) {
-        if (data == null)
-        {
-          print('no data');
-          return Container();
-        }
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       padding: EdgeInsets.all(5),
@@ -307,7 +299,9 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
   Widget build(BuildContext context) {
     return countryData == null ||
             worldData == null ||
-            _casesTimeLineData == null
+            _casesTimeLineData.isEmpty ||
+            _todayCasePieData.isEmpty ||
+            _todayDeathPieData.isEmpty
         ? Center(child: CircularProgressIndicator())
         : Provider.of<Notify>(context).pieChart
             ? SingleChildScrollView(
@@ -365,8 +359,7 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                           Row(
                             children: <Widget>[
                               CircleAvatar(
-                                  backgroundColor: Colors.red,
-                                  maxRadius: 6),
+                                  backgroundColor: Colors.red, maxRadius: 6),
                               SizedBox(width: 6),
                               Text(
                                 'Deaths',
@@ -390,21 +383,39 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                           domainAxis: charts.DateTimeAxisSpec(
                             renderSpec: charts.GridlineRendererSpec(
                               axisLineStyle: charts.LineStyleSpec(
-                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? charts.Color.black
+                                      : charts.Color.white),
                               labelStyle: charts.TextStyleSpec(
-                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? charts.Color.black
+                                      : charts.Color.white),
                               lineStyle: charts.LineStyleSpec(
-                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? charts.Color.black
+                                      : charts.Color.white),
                             ),
                           ),
                           primaryMeasureAxis: charts.NumericAxisSpec(
                             renderSpec: charts.GridlineRendererSpec(
                               axisLineStyle: charts.LineStyleSpec(
-                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? charts.Color.black
+                                      : charts.Color.white),
                               labelStyle: charts.TextStyleSpec(
-                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? charts.Color.black
+                                      : charts.Color.white),
                               lineStyle: charts.LineStyleSpec(
-                                  color: Theme.of(context).brightness == Brightness.light ? charts.Color.black : charts.Color.white),
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? charts.Color.black
+                                      : charts.Color.white),
                             ),
                           ),
                         ),

@@ -167,7 +167,7 @@ class SearchScreen extends SearchDelegate {
             child: Row(
               children: <Widget>[
                 Container(
-                  width: 150,
+                  width: MediaQuery.of(context).size.width * 0.3,
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,7 +197,7 @@ class SearchScreen extends SearchDelegate {
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             color: Colors.blue,
-                            fontSize: 18,
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
                           ),
                         ),
                         Text(
@@ -205,7 +205,7 @@ class SearchScreen extends SearchDelegate {
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             color: Colors.red,
-                            fontSize: 18,
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
                           ),
                         ),
                         Text(
@@ -213,7 +213,7 @@ class SearchScreen extends SearchDelegate {
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             color: Colors.green,
-                            fontSize: 18,
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
                           ),
                         ),
                         Text(
@@ -224,7 +224,7 @@ class SearchScreen extends SearchDelegate {
                                 Theme.of(context).brightness == Brightness.dark
                                     ? Colors.grey[100]
                                     : Colors.grey[900],
-                            fontSize: 18,
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
                           ),
                         ),
                       ],

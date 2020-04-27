@@ -40,12 +40,7 @@ class _CountryStatsScreenState extends State<CountryStatsScreen> {
     theDate = theDate.substring(2, theDate.length - 4);
     return DateTime.parse('20' + theDate);
   }
-
-  int _daysSinceJan22(DateTime dateTime) {
-    final jan22 = DateTime(2020, 1, 22);
-    return dateTime.difference(jan22).inDays;
-  }
-
+  
   _generatePoints() {
     List<Point> casesTime = List<Point>();
     countryData['timeline']['cases'].forEach(
