@@ -167,7 +167,7 @@ class SearchScreen extends SearchDelegate {
             child: Row(
               children: <Widget>[
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.3,
+                  width: MediaQuery.of(context).size.width * 0.4,
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +176,7 @@ class SearchScreen extends SearchDelegate {
                       Text(suggestionList[index]['country'],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 22,
+                            fontSize: MediaQuery.of(context).size.width * 0.05,
                           )),
                       Image.network(
                         suggestionList[index]['countryInfo']['flag'],
@@ -197,7 +197,7 @@ class SearchScreen extends SearchDelegate {
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             color: Colors.blue,
-                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                            fontSize: MediaQuery.of(context).size.width * 0.041,
                           ),
                         ),
                         Text(
@@ -205,7 +205,7 @@ class SearchScreen extends SearchDelegate {
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             color: Colors.red,
-                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                            fontSize: MediaQuery.of(context).size.width * 0.041,
                           ),
                         ),
                         Text(
@@ -213,7 +213,7 @@ class SearchScreen extends SearchDelegate {
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             color: Colors.green,
-                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                            fontSize: MediaQuery.of(context).size.width * 0.041,
                           ),
                         ),
                         Text(
@@ -224,7 +224,7 @@ class SearchScreen extends SearchDelegate {
                                 Theme.of(context).brightness == Brightness.dark
                                     ? Colors.grey[100]
                                     : Colors.grey[900],
-                            fontSize: MediaQuery.of(context).size.width * 0.05,
+                            fontSize: MediaQuery.of(context).size.width * 0.041,
                           ),
                         ),
                       ],

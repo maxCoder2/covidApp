@@ -310,9 +310,9 @@ class _MainStatsScreenState extends State<MainStatsScreen> {
                     SizedBox(
                       height: 10,
                     ),
+                    _buildPieChartSection('Today\'s Cases', _todayCasePieData),
                     _buildPieChartSection(
                         'Today\'s Deaths', _todayDeathPieData),
-                    _buildPieChartSection('Today\'s Cases', _todayCasePieData),
                   ],
                 ),
               )

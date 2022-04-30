@@ -56,7 +56,7 @@ class _CountryScreenState extends State<CountryScreen> {
                     child: Row(
                       children: <Widget>[
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.3,
+                          width: MediaQuery.of(context).size.width * 0.4,
                           margin: EdgeInsets.symmetric(horizontal: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class _CountryScreenState extends State<CountryScreen> {
                               Text(countryData[index]['country'],
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 22,
+                                    fontSize: MediaQuery.of(context).size.width * 0.05,
                                   )),
                               Image.network(
                                 countryData[index]['countryInfo']['flag'],
@@ -86,14 +86,14 @@ class _CountryScreenState extends State<CountryScreen> {
                                   style: TextStyle(
                                       fontWeight: FontWeight.w900,
                                       color: Colors.blue,
-                                      fontSize: MediaQuery.of(context).size.width * 0.05),
+                                      fontSize: MediaQuery.of(context).size.width * 0.041),
                                 ),
                                 Text(
                                   'Active: ${display(countryData[index]['active'])}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w900,
                                     color: Colors.red,
-                                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                                    fontSize: MediaQuery.of(context).size.width * 0.041,
                                   ),
                                 ),
                                 Text(
@@ -101,7 +101,7 @@ class _CountryScreenState extends State<CountryScreen> {
                                   style: TextStyle(
                                     fontWeight: FontWeight.w900,
                                     color: Colors.green,
-                                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                                    fontSize: MediaQuery.of(context).size.width * 0.041,
                                   ),
                                 ),
                                 Text(
@@ -112,7 +112,7 @@ class _CountryScreenState extends State<CountryScreen> {
                                             Brightness.dark
                                         ? Colors.grey[100]
                                         : Colors.grey[900],
-                                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                                    fontSize: MediaQuery.of(context).size.width * 0.041,
                                   ),
                                 ),
                               ],

@@ -62,7 +62,26 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.light
+                  ? Icons.lightbulb_outline
+                  : Icons.highlight,
+            ),
+            onPressed: () {
+              DynamicTheme.of(context).setBrightness(
+                  Theme.of(context).brightness == Brightness.light
+                      ? Brightness.dark
+                      : Brightness.light);
+            },
+          )
+        ],
+        title: Text('COVID-19 Tracker'),
+      ),
+      body: RefreshIndicator(
         onRefresh: _refresh,
               child: SingleChildScrollView(
           child: Column(
@@ -73,15 +92,28 @@ class _HomePageState extends State<HomePage> {
                 height: 50,
                 child: Text(
                   'Last updated: ' +
-                      DateFormat.yMMMMEEEEd().format(lastFetchTime) +
+                      DateFormat.yMMMMEEEEd().format(worldData['updated']) +
                       ' ' +
-                      DateFormat.jms().format(lastFetchTime),
+                      DateFormat.jms().format(worldData['updated']),
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.04,
                     fontWeight: FontWeight.w400,
                   ),
                   textAlign: TextAlign.left,
                 ),
+              ),
+              Padding(
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      'Worldwide',
+                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 25),
+                    ),
+                    RegionalButton(),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               ),
               worldData == null
                   ? Center(child: CircularProgressIndicator())
@@ -104,8 +136,8 @@ class _HomePageState extends State<HomePage> {
                   child: Text(
                 'WE ARE TOGETHER IN THE FIGHT',
                 style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 20,
                 ),
               )),
               SizedBox(
@@ -114,6 +146,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 }
